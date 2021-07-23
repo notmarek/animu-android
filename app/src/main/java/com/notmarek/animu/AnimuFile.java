@@ -1,6 +1,7 @@
-package com.notmarek.filepicker;
+package com.notmarek.animu;
 
 
+import android.net.Uri;
 
 public class AnimuFile implements Comparable<AnimuFile> {
 
@@ -38,12 +39,14 @@ public class AnimuFile implements Comparable<AnimuFile> {
     }
 
     public AnimuFile getParentFile() {
-        String[] path = this.path.split("/");
-        String parentPath = "";
-        for (int i = 0; i < path.length - 1; i++) {
-            parentPath = parentPath + "/" + path[i];
+        Uri uri = Uri.parse(this.path);
+        String lastPathSeg = uri.getLastPathSegment();
+        String parentPath = this.path.replace("/"+lastPathSeg, "");
+        System.out.println("niggrehjj"+parentPath);
+        if (parentPath.length() == 0) {
+            parentPath = "/";
         }
-        return new AnimuFile(parentPath);
+        return new AnimuFile(parentPath, true);
     }
 
     public AnimuFile[] listFiles() {

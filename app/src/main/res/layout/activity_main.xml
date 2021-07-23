@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main_layout"
-    tools:context="is.xyz.mpv.MainActivity">
-    <fragment android:name="is.xyz.mpv.MPVFilePickerFragment"
+    tools:context="com.notmarek.mpv.MainActivity">
+    <fragment android:name="com.notmarek.mpv.MPVFilePickerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/file_picker_fragment"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="is.xyz.mpv">
+    package="com.notmarek.mpv">
 
     <uses-feature
         android:name="android.software.leanback"
@@ -165,6 +165,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                android:scheme="animu"
+                android:host="animu.notmarek.com" />
+
+                <data android:scheme="animu" android:host="save.token" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".FilePickerActivity"
@@ -181,9 +193,9 @@
             android:exported="false" />
         <receiver android:name=".NotificationButtonReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="is.xyz.mpv.PLAY_PAUSE" />
-                <action android:name="is.xyz.mpv.ACTION_PREV" />
-                <action android:name="is.xyz.mpv.ACTION_NEXT" />
+                <action android:name="com.notmarek.mpv.PLAY_PAUSE" />
+                <action android:name="com.notmarek.mpv.ACTION_PREV" />
+                <action android:name="com.notmarek.mpv.ACTION_NEXT" />
             </intent-filter>
         </receiver>
     </application>

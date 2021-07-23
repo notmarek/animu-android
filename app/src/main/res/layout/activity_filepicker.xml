@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="is.xyz.mpv.FilePickerActivity">
-    <fragment android:name="is.xyz.mpv.MPVFilePickerFragment"
+    tools:context="com.notmarek.mpv.FilePickerActivity">
+    <fragment android:name="com.notmarek.mpv.MPVFilePickerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/file_picker_fragment"
