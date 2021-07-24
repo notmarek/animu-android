@@ -10,8 +10,10 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class AnimuApi {
@@ -22,7 +24,8 @@ public class AnimuApi {
     public AnimuApi(String token) {
         this.token = token;
     }
-    public String getUrl(String url) throws IOException {
+
+    public String get(String url) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Authorization", this.token)
@@ -33,52 +36,70 @@ public class AnimuApi {
         }
     }
 
+    public String post(String url, String json) throws IOException {
+        RequestBody body = RequestBody.create(MediaType.get("application/json; charset=utf-8"), json);
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", this.token)
+                .post(body)
+                .build();
+        try (Response response = this.client.newCall(request).execute()) {
+            return response.body().string();
+        }
+    }
+
     public JSONArray getFilesFromPath(String path) throws ExecutionException, InterruptedException, JSONException {
-        AnimuAsync async = new AnimuAsync(this);
+        AnimuAsyncGet async = new AnimuAsyncGet(this);
         String response = async.execute(this.apiUrl + path).get();
         return new JSONArray(response);
     }
 
     public JSONObject updateInfo() throws ExecutionException, InterruptedException, JSONException {
-        AnimuAsync async = new AnimuAsync(this);
+        AnimuAsyncGet async = new AnimuAsyncGet(this);
         String response = async.execute(this.baseUrl + "/app.json").get();
         return new JSONObject(response);
     }
 
     public JSONArray search(String query) throws ExecutionException, InterruptedException, JSONException {
-        AnimuAsync async = new AnimuAsync(this);
+        AnimuAsyncGet async = new AnimuAsyncGet(this);
         String response = async.execute(this.apiUrl + "/search?q=" + URLEncoder.encode(query)).get();
         // TODO: write the backend function
         return new JSONArray(response);
     }
+
+    public JSONObject requestTorrent(String magnet) throws ExecutionException, InterruptedException, JSONException {
+        AnimuAsyncPost async = new AnimuAsyncPost(this);
+        String response = async.execute(this.apiUrl + "/torrents/request", "{\"link\":\"" + magnet + "\"}").get();
+        return new JSONObject(response);
+    }
+
 }
 
-class AnimuAsync extends AsyncTask<String, Void, String> {
+class AnimuAsyncGet extends AsyncTask<String, Void, String> {
     private AnimuApi api;
-    private String result = "";
-    private boolean finished = false;
-    AnimuAsync(AnimuApi api) {
+    AnimuAsyncGet(AnimuApi api) {
         this.api = api;
     }
     @Override
     protected String doInBackground(String... urls) {
         try {
-            return this.api.getUrl(urls[0]);
+            return this.api.get(urls[0]);
         } catch (IOException e) {
             return "error";
         }
     }
-    protected boolean isFinished() {
-        return finished;
-    }
-    protected String getResult() {
-        return this.result;
+}
+class AnimuAsyncPost extends AsyncTask<String, Void, String> {
+    private AnimuApi api;
+    AnimuAsyncPost(AnimuApi api) {
+        this.api = api;
     }
     @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-
-        this.finished = true;
-        this.result = s;
+    protected String doInBackground(String... urls) {
+        try {
+            return this.api.post(urls[0], urls[1]);
+        } catch (IOException e) {
+            return "error";
+        }
     }
 }

@@ -13,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.notmarek.animu.AnimuApi
@@ -136,43 +137,66 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
-        if (id == R.id.action_search) {
-            val input = EditText(this)
-            input.inputType = InputType.TYPE_CLASS_TEXT
+        when (id) {
+            R.id.action_request -> {
+                val input = EditText(this)
+                input.inputType = InputType.TYPE_CLASS_TEXT
 
-            with(AlertDialog.Builder(this)) {
-                setTitle(R.string.action_search)
-                setView(input)
+                with(AlertDialog.Builder(this)) {
+                    setTitle(R.string.action_search)
+                    setView(input)
 
-                setPositiveButton(R.string.action_search) { dialog, _ ->
-                    val fragment = supportFragmentManager.findFragmentById(R.id.file_picker_fragment) as MPVFilePickerFragment
-                    fragment.goToDir(AnimuFile(true, input.text.toString()))
+                    setPositiveButton(R.string.action_search) { dialog, _ ->
+                        val result = AnimuApi(PreferenceManager.getDefaultSharedPreferences(context).getString("animu_token", "kek")).requestTorrent(input.text.toString())
+                        dialog.dismiss()
+                        Toast.makeText(context, result.getString("data"), Toast.LENGTH_SHORT).show()
+                    }
+                    setNegativeButton(R.string.dialog_cancel) { dialog, _ ->
+                        dialog.cancel()
+                    }
+                    show()
                 }
-                setNegativeButton(R.string.dialog_cancel) { dialog, _ ->
-                    dialog.cancel()
-                }
-                show()
             }
-        } else if (id == R.id.action_open_url) {
-            // https://stackoverflow.com/questions/10903754/#answer-10904665
-            val input = EditText(this)
-            input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
+            R.id.action_search -> {
+                val input = EditText(this)
+                input.inputType = InputType.TYPE_CLASS_TEXT
 
-            with(AlertDialog.Builder(this)) {
-                setTitle(R.string.action_open_url)
-                setView(input)
-                setPositiveButton(R.string.dialog_ok) { dialog, _ ->
-                    playFile(input.text.toString())
+                with(AlertDialog.Builder(this)) {
+                    setTitle(R.string.action_request)
+                    setView(input)
+
+                    setPositiveButton("Submit") { dialog, _ ->
+                        val fragment = supportFragmentManager.findFragmentById(R.id.file_picker_fragment) as MPVFilePickerFragment
+                        fragment.goToDir(AnimuFile(true, input.text.toString()))
+                    }
+                    setNegativeButton(R.string.dialog_cancel) { dialog, _ ->
+                        dialog.cancel()
+                    }
+                    show()
                 }
-                setNegativeButton(R.string.dialog_cancel) { dialog, _ ->
-                    dialog.cancel()
-                }
-                show()
             }
-        } else if (id == R.id.action_settings) {
-            val i = Intent(this, SettingsActivity::class.java)
-            startActivity(i)
-            return true
+            R.id.action_open_url -> {
+                // https://stackoverflow.com/questions/10903754/#answer-10904665
+                val input = EditText(this)
+                input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
+
+                with(AlertDialog.Builder(this)) {
+                    setTitle(R.string.action_open_url)
+                    setView(input)
+                    setPositiveButton(R.string.dialog_ok) { dialog, _ ->
+                        playFile(input.text.toString())
+                    }
+                    setNegativeButton(R.string.dialog_cancel) { dialog, _ ->
+                        dialog.cancel()
+                    }
+                    show()
+                }
+            }
+            R.id.action_settings -> {
+                val i = Intent(this, SettingsActivity::class.java)
+                startActivity(i)
+                return true
+            }
         }
         return false
     }
