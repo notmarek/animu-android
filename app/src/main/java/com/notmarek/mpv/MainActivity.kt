@@ -115,47 +115,7 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
 
-        if (id == R.id.action_external_storage) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-//                val path = Environment.getExternalStorageDirectory()
-            val path = AnimuFile("/")
-                (fragment as MPVFilePickerFragment).goToDir(path) // do something
-                return true
-            }
-
-            val vols = Utils.getStorageVolumes(this)
-
-            with (AlertDialog.Builder(this)) {
-                setItems(vols.map { it.description }.toTypedArray()) { dialog, item ->
-                    val vol = vols[item]
-                    with (fragment as MPVFilePickerFragment) {
-//                        root = vol.path
-//                        goToDir(vol.path)
-                        root = AnimuFile("/");
-                        goToDir(AnimuFile("/"))
-                    }
-                    dialog.dismiss()
-                }
-                show()
-            }
-            return true
-        } else if (id == R.id.action_file_filter) {
-            val old: Boolean
-            with (fragment as MPVFilePickerFragment) {
-                old = filterPredicate != null
-                filterPredicate = if (!old) MEDIA_FILE_FILTER else null
-            }
-            with (Toast.makeText(this, "", Toast.LENGTH_SHORT)) {
-                setText(if (!old) R.string.notice_show_media_files else R.string.notice_show_all_files)
-                show()
-            }
-            // remember state for next time
-            with (PreferenceManager.getDefaultSharedPreferences(this).edit()) {
-                this.putBoolean("${localClassName}_filter_state", !old)
-                apply()
-            }
-            return true
-        } else if (id == R.id.action_open_url) {
+        if (id == R.id.action_open_url) {
             // https://stackoverflow.com/questions/10903754/#answer-10904665
             val input = EditText(this)
             input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
