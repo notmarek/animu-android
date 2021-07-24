@@ -9,6 +9,7 @@ package com.notmarek.filepicker;
 import com.notmarek.animu.AnimuApi;
 import com.notmarek.animu.AnimuFile;
 import com.notmarek.mpv.R;
+import com.notmarek.mpv.Utils;
 
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 
@@ -257,18 +259,23 @@ public class FilePickerFragment extends AbstractFilePickerFragment<AnimuFile> {
                     {
                         try {
                             JSONObject oneObject = jar.getJSONObject(i);
+                            String name = oneObject.getString("anime");
+                            String ep = oneObject.getString("episode");
+                            if (ep.length() > 0) {
+                                name += " #" + ep;
+                            }
                             if (mCurrentPath.getPath() == "/") {
                                 if (oneObject.getString("type").contains("directory")) {
-                                    listFiles[i] = new AnimuFile("/" + oneObject.getString("name"), oneObject.getString("anime"), true);
+                                    listFiles[i] = new AnimuFile("/" + oneObject.getString("name"), name, true);
                                 } else {
-                                    listFiles[i] = new AnimuFile(oneObject.getString("name"), oneObject.getString("anime"), false);
+                                    listFiles[i] = new AnimuFile(oneObject.getString("name"), name, false);
                                 }
                             } else {
 
                                 if (oneObject.getString("type").contains("directory")) {
-                                    listFiles[i] = new AnimuFile(mCurrentPath.getPath() + "/" + oneObject.getString("name"), oneObject.getString("anime"), true);
+                                    listFiles[i] = new AnimuFile(mCurrentPath.getPath() + "/" + oneObject.getString("name"), name, true);
                                 } else {
-                                    listFiles[i] = new AnimuFile(oneObject.getString("name"), oneObject.getString("anime"), false);
+                                    listFiles[i] = new AnimuFile(oneObject.getString("name"), name, false);
                                 }
                             }
                         } catch (JSONException e) {
@@ -308,7 +315,8 @@ public class FilePickerFragment extends AbstractFilePickerFragment<AnimuFile> {
                     for (AnimuFile f : listFiles) {
                         if (f.isHidden() && !areHiddenItemsShown())
                             continue;
-
+                        if (!f.isDirectory() && !Utils.media_exts.contains(f.getExtension()))
+                            continue;
                         files.add(f);
                     }
                 }

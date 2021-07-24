@@ -3,6 +3,8 @@ package com.notmarek.animu;
 
 import android.net.Uri;
 
+import java.util.regex.Pattern;
+
 public class AnimuFile implements Comparable<AnimuFile> {
 
     private final String path;
@@ -44,6 +46,15 @@ public class AnimuFile implements Comparable<AnimuFile> {
             return this.name;
         } else {
             return this.getFolderName();
+        }
+    }
+
+    public String getExtension() {
+        if (isDirectory()) {
+            return "";
+        } else {
+            String[] splitPath = this.path.split(Pattern.quote("."));
+            return splitPath[splitPath.length - 1];
         }
     }
 

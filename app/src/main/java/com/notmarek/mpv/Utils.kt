@@ -186,6 +186,7 @@ object Utils {
         }
     }
 
+
     private const val TAG = "mpv"
 
     // This is used to filter files in the file picker, so it contains just about everything
@@ -217,4 +218,6 @@ object Utils {
             "apng", "bmp", "exr", "gif", "j2c", "j2k", "jfif", "jp2", "jpc", "jpe", "jpeg", "jpg",
             "jpg2", "png", "tga", "tif", "tiff", "webp",
     )
+    @kotlin.jvm.JvmField
+    var media_exts: Set<String> = MEDIA_EXTENSIONS;
 }
