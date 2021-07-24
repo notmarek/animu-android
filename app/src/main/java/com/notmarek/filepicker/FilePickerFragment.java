@@ -259,16 +259,16 @@ public class FilePickerFragment extends AbstractFilePickerFragment<AnimuFile> {
                             JSONObject oneObject = jar.getJSONObject(i);
                             if (mCurrentPath.getPath() == "/") {
                                 if (oneObject.getString("type").contains("directory")) {
-                                    listFiles[i] = new AnimuFile("/" + oneObject.getString("name"), true);
+                                    listFiles[i] = new AnimuFile("/" + oneObject.getString("name"), oneObject.getString("anime"), true);
                                 } else {
-                                    listFiles[i] = new AnimuFile(oneObject.getString("name"), false);
+                                    listFiles[i] = new AnimuFile(oneObject.getString("name"), oneObject.getString("anime"), false);
                                 }
                             } else {
 
                                 if (oneObject.getString("type").contains("directory")) {
-                                    listFiles[i] = new AnimuFile(mCurrentPath.getPath() + "/" + oneObject.getString("name"), true);
+                                    listFiles[i] = new AnimuFile(mCurrentPath.getPath() + "/" + oneObject.getString("name"), oneObject.getString("anime"), true);
                                 } else {
-                                    listFiles[i] = new AnimuFile(oneObject.getString("name"), false);
+                                    listFiles[i] = new AnimuFile(oneObject.getString("name"), oneObject.getString("anime"), false);
                                 }
                             }
                         } catch (JSONException e) {
@@ -286,7 +286,7 @@ public class FilePickerFragment extends AbstractFilePickerFragment<AnimuFile> {
                 SortedList<AnimuFile> files = new SortedList<>(AnimuFile.class, new SortedListAdapterCallback<AnimuFile>(getDummyAdapter()) {
                     @Override
                     public int compare(AnimuFile o1, AnimuFile o2) {
-                        return 0;
+                        return -1;
                     }
 
                     @Override
