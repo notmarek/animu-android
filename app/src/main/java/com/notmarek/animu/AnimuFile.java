@@ -10,24 +10,38 @@ public class AnimuFile implements Comparable<AnimuFile> {
     private final String path;
     private final boolean isDir;
     private final String name;
+    private final boolean search;
 
     public AnimuFile(String path) {
         this.path = path;
         this.isDir = false;
         this.name = "";
+        this.search = false;
     }
 
     public AnimuFile(String path, boolean isDir) {
         this.path = path;
         this.isDir = isDir;
         this.name = "";
+        this.search = false;
     }
 
     public AnimuFile(String path, String name, boolean isDir) {
         this.path = path;
         this.name = name;
         this.isDir = isDir;
+        this.search = false;
     }
+
+    public AnimuFile(boolean search, String searchTerm) {
+        this.path = "Search";
+        this.name = searchTerm;
+        this.isDir = false;
+        this.search = search;
+    }
+
+    public boolean isSearch() { return this.search; }
+
     public boolean isDirectory() {
         return this.isDir;
     }

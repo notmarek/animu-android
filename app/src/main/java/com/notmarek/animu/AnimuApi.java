@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
 
 import okhttp3.OkHttpClient;
@@ -35,15 +36,20 @@ public class AnimuApi {
     public JSONArray getFilesFromPath(String path) throws ExecutionException, InterruptedException, JSONException {
         AnimuAsync async = new AnimuAsync(this);
         String response = async.execute(this.apiUrl + path).get();
-        JSONArray jArray = new JSONArray(response);
-        return jArray;
+        return new JSONArray(response);
     }
 
     public JSONObject updateInfo() throws ExecutionException, InterruptedException, JSONException {
         AnimuAsync async = new AnimuAsync(this);
         String response = async.execute(this.baseUrl + "/app.json").get();
-        JSONObject jObj = new JSONObject(response);
-        return jObj;
+        return new JSONObject(response);
+    }
+
+    public JSONArray search(String query) throws ExecutionException, InterruptedException, JSONException {
+        AnimuAsync async = new AnimuAsync(this);
+        String response = async.execute(this.apiUrl + "/search?q=" + URLEncoder.encode(query)).get();
+        // TODO: write the backend function
+        return new JSONArray(response);
     }
 }
 

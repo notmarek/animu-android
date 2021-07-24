@@ -136,8 +136,24 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
+        if (id == R.id.action_search) {
+            val input = EditText(this)
+            input.inputType = InputType.TYPE_CLASS_TEXT
 
-        if (id == R.id.action_open_url) {
+            with(AlertDialog.Builder(this)) {
+                setTitle(R.string.action_search)
+                setView(input)
+
+                setPositiveButton(R.string.action_search) { dialog, _ ->
+                    val fragment = supportFragmentManager.findFragmentById(R.id.file_picker_fragment) as MPVFilePickerFragment
+                    fragment.goToDir(AnimuFile(true, input.text.toString()))
+                }
+                setNegativeButton(R.string.dialog_cancel) { dialog, _ ->
+                    dialog.cancel()
+                }
+                show()
+            }
+        } else if (id == R.id.action_open_url) {
             // https://stackoverflow.com/questions/10903754/#answer-10904665
             val input = EditText(this)
             input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI

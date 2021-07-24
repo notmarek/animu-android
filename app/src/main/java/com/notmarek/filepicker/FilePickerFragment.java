@@ -253,7 +253,13 @@ public class FilePickerFragment extends AbstractFilePickerFragment<AnimuFile> {
             public SortedList<AnimuFile> loadInBackground() {
                 AnimuFile[] listFiles = new AnimuFile[0];
                 try {
-                    JSONArray jar = new AnimuApi(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("animu_token", "kek")).getFilesFromPath(mCurrentPath.getPath());
+                    AnimuApi api = new AnimuApi(PreferenceManager.getDefaultSharedPreferences(getContext()).getString("animu_token", "kek"));
+                    JSONArray jar = new JSONArray();
+                    if (!mCurrentPath.isSearch()) {
+                        jar = api.getFilesFromPath(mCurrentPath.getPath());
+                    } else {
+                        jar = api.search(mCurrentPath.getName());
+                    }
                     listFiles = new AnimuFile[jar.length()];
                     for (int i=0; i < jar.length(); i++)
                     {
