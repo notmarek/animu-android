@@ -15,6 +15,7 @@ import android.widget.EditText
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.notmarek.animu.AnimuApi
 import com.notmarek.animu.AnimuFile
 import com.notmarek.filepicker.AbstractFilePickerFragment
 import com.notmarek.mpv.config.SettingsActivity
@@ -35,6 +36,23 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+        val updateInfo = AnimuApi("").updateInfo()
+        if (BuildConfig.VERSION_CODE != updateInfo.getInt("version_code")) {
+            with(AlertDialog.Builder(this)) {
+                setTitle("Update available")
+                setPositiveButton("Download") { dialog, _ ->
+                    val browserIntent =
+                        Intent(Intent.ACTION_VIEW, Uri.parse(updateInfo.getString("apk_url")))
+                    startActivity(browserIntent)
+                }
+                setNegativeButton(R.string.dialog_cancel) { dialog, _ ->
+                    dialog.cancel()
+                }
+                show()
+            }
+        }
 
         val data: Uri? = intent?.data;
         if (data != null) {

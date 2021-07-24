@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -14,7 +15,8 @@ import okhttp3.Response;
 
 public class AnimuApi {
     OkHttpClient client = new OkHttpClient();
-    String baseUrl = "https://animu.notmarek.com/fancy";
+    String baseUrl = "https://animu.notmarek.com";
+    String apiUrl = baseUrl + "/fancy";
     private String token;
     public AnimuApi(String token) {
         this.token = token;
@@ -32,9 +34,16 @@ public class AnimuApi {
 
     public JSONArray getFilesFromPath(String path) throws ExecutionException, InterruptedException, JSONException {
         AnimuAsync async = new AnimuAsync(this);
-        String response = async.execute(this.baseUrl + path).get();
+        String response = async.execute(this.apiUrl + path).get();
         JSONArray jArray = new JSONArray(response);
         return jArray;
+    }
+
+    public JSONObject updateInfo() throws ExecutionException, InterruptedException, JSONException {
+        AnimuAsync async = new AnimuAsync(this);
+        String response = async.execute(this.baseUrl + "/app.json").get();
+        JSONObject jObj = new JSONObject(response);
+        return jObj;
     }
 }
 
