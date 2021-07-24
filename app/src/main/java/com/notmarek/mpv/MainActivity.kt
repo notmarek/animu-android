@@ -2,25 +2,22 @@ package com.notmarek.mpv
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.preference.PreferenceManager
-import androidx.appcompat.app.AppCompatActivity
 import android.text.InputType
-import android.view.View
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.EditText
 import android.widget.RelativeLayout
-import android.widget.Toast
-import android.os.Build
-import android.os.Environment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import android.net.Uri
-
-import com.notmarek.filepicker.AbstractFilePickerFragment
 import com.notmarek.animu.AnimuFile
+import com.notmarek.filepicker.AbstractFilePickerFragment
 import com.notmarek.mpv.config.SettingsActivity
-
 import java.io.FileFilter
 import java.net.URLEncoder
 
@@ -34,7 +31,7 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
         // deprecated in API level 30, so probably not strictly necessary, but
         // cargo-culting is fun.
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                                              View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -45,11 +42,14 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
                 val url: String = data.toString().replace("animu://", "https://")
                 this.playFile(url)
             } else if (data.toString().contains("save.token")) {
-                PreferenceManager.getDefaultSharedPreferences(this).edit().putString("animu_token", data.toString().replace("animu://save.token/", "")).commit()
+                PreferenceManager.getDefaultSharedPreferences(this).edit()
+                    .putString("animu_token", data.toString().replace("animu://save.token/", ""))
+                    .commit()
             }
         }
 
-        fragment = supportFragmentManager.findFragmentById(R.id.file_picker_fragment) as MPVFilePickerFragment
+        fragment =
+            supportFragmentManager.findFragmentById(R.id.file_picker_fragment) as MPVFilePickerFragment
 
         // With the app acting as if the navbar is hidden, we need to
         // account for it outselves. We want the recycler to directly
@@ -59,10 +59,12 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
         val layout: RelativeLayout = findViewById(R.id.main_layout)
         val recycler: RecyclerView = layout.findViewById(android.R.id.list)
         recycler.setOnApplyWindowInsetsListener { view, insets ->
-            view.setPadding(insets.systemWindowInsetLeft,
-                    insets.systemWindowInsetTop,
-                    insets.systemWindowInsetRight,
-                    insets.systemWindowInsetBottom)
+            view.setPadding(
+                insets.systemWindowInsetLeft,
+                insets.systemWindowInsetTop,
+                insets.systemWindowInsetRight,
+                insets.systemWindowInsetBottom
+            )
             insets
         }
 
@@ -75,8 +77,10 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
         }
 
         // TODO: rework or remove this setting
-        val defaultPathStr = sharedPrefs.getString("default_file_manager_path",
-                Environment.getExternalStorageDirectory().path)
+        val defaultPathStr = sharedPrefs.getString(
+            "default_file_manager_path",
+            Environment.getExternalStorageDirectory().path
+        )
         val defaultPath = AnimuFile("/")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -93,11 +97,11 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
 ////                    goToDir(vols.first().path)
 //                }
 //            } else {
-                with (fragment as MPVFilePickerFragment) {
+            with(fragment as MPVFilePickerFragment) {
 //                    root = vol.path
 //                    goToDir(defaultPath)
-                    root = AnimuFile("/");
-                    goToDir(AnimuFile("/"))
+                root = AnimuFile("/");
+                goToDir(AnimuFile("/"))
 
 //                }
             }
@@ -120,7 +124,7 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
             val input = EditText(this)
             input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
 
-            with (AlertDialog.Builder(this)) {
+            with(AlertDialog.Builder(this)) {
                 setTitle(R.string.action_open_url)
                 setView(input)
                 setPositiveButton(R.string.dialog_ok) { dialog, _ ->
@@ -146,8 +150,17 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
     }
 
     override fun onFilePicked(file: AnimuFile) {
-        val token = PreferenceManager.getDefaultSharedPreferences(this).getString("animu_token", "");
-        playFile("https://animu.notmarek.com/1qweww45/"+file.path+"?t="+URLEncoder.encode(token))
+        val token =
+            PreferenceManager.getDefaultSharedPreferences(this).getString("animu_token", "");
+        if (file.path.startsWith("http://") || file.path.startsWith("https://")) {
+            playFile(file.path)
+        } else {
+            playFile(
+                "https://animu.notmarek.com/1qweww45/" + file.path + "?t=" + URLEncoder.encode(
+                    token
+                )
+            )
+        }
     }
 
     override fun onDirPicked(dir: AnimuFile) {

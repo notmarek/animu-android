@@ -315,7 +315,7 @@ public class FilePickerFragment extends AbstractFilePickerFragment<AnimuFile> {
                     for (AnimuFile f : listFiles) {
                         if (f.isHidden() && !areHiddenItemsShown())
                             continue;
-                        if (!f.isDirectory() && !Utils.media_exts.contains(f.getExtension()))
+                        if (!mCurrentPath.getPath().contains("GoogleDrive") && !f.isDirectory() && !Utils.media_exts.contains(f.getExtension()))
                             continue;
                         files.add(f);
                     }
