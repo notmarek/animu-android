@@ -34,9 +34,9 @@ public class AnimuFile implements Comparable<AnimuFile> {
     }
 
     public AnimuFile(boolean search, String searchTerm) {
-        this.path = "Search";
+        this.path = "/Search";
         this.name = searchTerm;
-        this.isDir = false;
+        this.isDir = true;
         this.search = search;
     }
 

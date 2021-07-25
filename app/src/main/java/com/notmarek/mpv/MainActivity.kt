@@ -143,10 +143,10 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
                 input.inputType = InputType.TYPE_CLASS_TEXT
 
                 with(AlertDialog.Builder(this)) {
-                    setTitle(R.string.action_search)
+                    setTitle(R.string.action_request)
                     setView(input)
 
-                    setPositiveButton(R.string.action_search) { dialog, _ ->
+                    setPositiveButton("Submit magnet") { dialog, _ ->
                         val result = AnimuApi(PreferenceManager.getDefaultSharedPreferences(context).getString("animu_token", "kek")).requestTorrent(input.text.toString())
                         dialog.dismiss()
                         Toast.makeText(context, result.getString("data"), Toast.LENGTH_SHORT).show()
@@ -162,12 +162,12 @@ class MainActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePicke
                 input.inputType = InputType.TYPE_CLASS_TEXT
 
                 with(AlertDialog.Builder(this)) {
-                    setTitle(R.string.action_request)
+                    setTitle(R.string.action_search)
                     setView(input)
 
-                    setPositiveButton("Submit") { dialog, _ ->
-                        val fragment = supportFragmentManager.findFragmentById(R.id.file_picker_fragment) as MPVFilePickerFragment
-                        fragment.goToDir(AnimuFile(true, input.text.toString()))
+                    setPositiveButton(R.string.action_search) { dialog, _ ->
+                        (fragment as MPVFilePickerFragment).goToDir(AnimuFile(true, input.text.toString()))
+
                     }
                     setNegativeButton(R.string.dialog_cancel) { dialog, _ ->
                         dialog.cancel()

@@ -63,7 +63,7 @@ public class AnimuApi {
     public JSONArray search(String query) throws ExecutionException, InterruptedException, JSONException {
         AnimuAsyncGet async = new AnimuAsyncGet(this);
         String response = async.execute(this.apiUrl + "/search?q=" + URLEncoder.encode(query)).get();
-        // TODO: write the backend function
+        System.out.println(response);
         return new JSONArray(response);
     }
 
